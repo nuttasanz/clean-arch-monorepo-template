@@ -25,10 +25,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const backendResponse = await serverAxios.post<IApiResponse<LoginBackendData>>(
-      "/auth/login",
-      parsed.data,
-    );
+    const backendResponse = await serverAxios.post<
+      IApiResponse<LoginBackendData>
+    >("/auth/login", parsed.data);
 
     const { data: responseBody } = backendResponse;
 
@@ -60,17 +59,13 @@ export async function POST(request: NextRequest) {
       "response" in error &&
       typeof (error as { response?: { status?: number } }).response?.status ===
         "number"
-        ? ((error as { response: { status: number } }).response.status)
+        ? (error as { response: { status: number } }).response.status
         : 500;
 
     const message =
-      typeof error === "object" &&
-      error !== null &&
-      "response" in error
-        ? (
-            (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message ?? "An error occurred"
-          )
+      typeof error === "object" && error !== null && "response" in error
+        ? ((error as { response?: { data?: { message?: string } } }).response
+            ?.data?.message ?? "An error occurred")
         : "An internal server error occurred";
 
     return NextResponse.json({ message }, { status });

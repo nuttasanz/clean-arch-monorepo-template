@@ -37,13 +37,9 @@ export async function POST(request: NextRequest) {
         : 500;
 
     const message =
-      typeof error === "object" &&
-      error !== null &&
-      "response" in error
-        ? (
-            (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message ?? "An error occurred"
-          )
+      typeof error === "object" && error !== null && "response" in error
+        ? ((error as { response?: { data?: { message?: string } } }).response
+            ?.data?.message ?? "An error occurred")
         : "An internal server error occurred";
 
     return NextResponse.json({ message }, { status });

@@ -22,8 +22,8 @@ export function useRegister() {
     },
     onError: (error: unknown) => {
       const message = axios.isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ??
-          "Registration failed. Please try again."
+        ? ((error.response?.data as { message?: string })?.message ??
+          "Registration failed. Please try again.")
         : "An unexpected error occurred.";
       notifications.show({
         color: "red",

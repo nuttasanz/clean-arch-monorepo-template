@@ -1,4 +1,5 @@
 # badminton-nexus-api
+
 # Badminton Nexus - Exploring Under the Hood 🚀
 
 โปรเจคนี้ถูกออกแบบมาเพื่อเป็นสื่อการเรียนรู้พื้นฐานของ Backend Development โดยเน้นไปที่ **SOLID Principles**, **Clean Architecture**, และการใช้ **Raw SQL** เพื่อให้เข้าใจสิ่งที่ซ่อนอยู่ภายใต้ Framework หรือ ORM ต่างๆ

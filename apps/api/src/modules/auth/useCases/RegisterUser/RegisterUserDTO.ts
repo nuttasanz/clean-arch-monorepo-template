@@ -1,1 +1,4 @@
-export { registerUserSchema, type RegisterUserDTO } from "@my-project/shared-schema";
+export {
+  registerUserSchema,
+  type RegisterUserDTO,
+} from "@my-project/shared-schema";

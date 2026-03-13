@@ -20,8 +20,8 @@ export function useLogin() {
     },
     onError: (error: unknown) => {
       const message = axios.isAxiosError(error)
-        ? (error.response?.data as { message?: string })?.message ??
-          "Login failed. Please try again."
+        ? ((error.response?.data as { message?: string })?.message ??
+          "Login failed. Please try again.")
         : "An unexpected error occurred.";
       notifications.show({
         color: "red",

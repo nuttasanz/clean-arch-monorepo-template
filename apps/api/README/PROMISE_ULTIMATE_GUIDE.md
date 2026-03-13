@@ -16,9 +16,9 @@
 
 ```typescript
 // ❌ แบบ Synchronous — หน้าจอแข็งค้างไปเลย
-const data = fetchDataSync('https://api.example.com/users'); // รอจนเสร็จ
+const data = fetchDataSync("https://api.example.com/users"); // รอจนเสร็จ
 console.log(data); // บรรทัดนี้ต้องรอ
-console.log('ทำอย่างอื่นไม่ได้ระหว่างรอ...'); // ไม่ถูกรันจนกว่า fetchData จะเสร็จ
+console.log("ทำอย่างอื่นไม่ได้ระหว่างรอ..."); // ไม่ถูกรันจนกว่า fetchData จะเสร็จ
 ```
 
 ---
@@ -45,6 +45,7 @@ getUser(userId, (user) => {
 ```
 
 **ปัญหาของ Callbacks:**
+
 - อ่านยาก, เดบัก ยากมาก
 - การจัดการ Error ต้องทำในทุก callback แยกกัน
 - ลำดับการรันไม่ชัดเจน
@@ -63,7 +64,7 @@ getUser(userId, (user) => {
 // ✅ แบบ Promise — สะอาด, อ่านง่าย
 const userPromise = fetchUser(userId); // ได้ Promise กลับมาทันที เหมือนรับเพจเจอร์
 // โค้ดตรงนี้ทำงานต่อได้เลย ไม่ต้องรอ fetchUser
-console.log('รับเพจเจอร์แล้ว ไปทำอย่างอื่นต่อได้เลย');
+console.log("รับเพจเจอร์แล้ว ไปทำอย่างอื่นต่อได้เลย");
 ```
 
 ---
@@ -72,11 +73,11 @@ console.log('รับเพจเจอร์แล้ว ไปทำอย่
 
 Promise มี **3 สถานะ** เหมือนเพจเจอร์:
 
-| สถานะ | ภาษาร้านอาหาร | ความหมาย |
-|---|---|---|
-| **Pending** | กำลังรอ | กำลังประมวลผล ยังไม่มีผลลัพธ์ |
-| **Fulfilled** | เพจเจอร์สั่นสีเขียว ✅ | สำเร็จ มีข้อมูลกลับมา |
-| **Rejected** | เพจเจอร์สั่นสีแดง ❌ | ล้มเหลว มี Error กลับมา |
+| สถานะ         | ภาษาร้านอาหาร          | ความหมาย                      |
+| ------------- | ---------------------- | ----------------------------- |
+| **Pending**   | กำลังรอ                | กำลังประมวลผล ยังไม่มีผลลัพธ์ |
+| **Fulfilled** | เพจเจอร์สั่นสีเขียว ✅ | สำเร็จ มีข้อมูลกลับมา         |
+| **Rejected**  | เพจเจอร์สั่นสีแดง ❌   | ล้มเหลว มี Error กลับมา       |
 
 **กฎสำคัญ:** Promise เปลี่ยนสถานะได้เพียงครั้งเดียว และไม่มีวันย้อนกลับ
 
@@ -84,12 +85,12 @@ Promise มี **3 สถานะ** เหมือนเพจเจอร์:
 
 > 📖 **จาก MDN:** คำว่า **"resolved"** ถูกใช้บ่อยจนสับสนกับ "fulfilled" แต่ความหมายจริงๆ ต่างกัน
 
-| คำศัพท์ | ความหมาย |
-|---|---|
-| **Settled** | Promise จบแล้ว — ไม่ว่าจะเป็น Fulfilled หรือ Rejected |
-| **Fulfilled** | สำเร็จ มีค่า value กลับมา |
-| **Rejected** | ล้มเหลว มี reason (error) กลับมา |
-| **Resolved** | ถูก "ล็อค" ให้ตาม Promise อื่น — อาจยัง Pending อยู่ก็ได้! |
+| คำศัพท์       | ความหมาย                                                   |
+| ------------- | ---------------------------------------------------------- |
+| **Settled**   | Promise จบแล้ว — ไม่ว่าจะเป็น Fulfilled หรือ Rejected      |
+| **Fulfilled** | สำเร็จ มีค่า value กลับมา                                  |
+| **Rejected**  | ล้มเหลว มี reason (error) กลับมา                           |
+| **Resolved**  | ถูก "ล็อค" ให้ตาม Promise อื่น — อาจยัง Pending อยู่ก็ได้! |
 
 ```typescript
 // ตัวอย่างจาก MDN: Promise ที่ "resolved" แต่ยัง "pending"
@@ -98,7 +99,7 @@ const outer = new Promise((resolveOuter) => {
     // resolve ด้วย Promise อื่น — outer จึง "resolved" แต่ยัง pending!
     new Promise((resolveInner) => {
       setTimeout(resolveInner, 1000); // outer จะ fulfilled ก็ต่อเมื่อ inner fulfilled
-    })
+    }),
   );
 });
 // ณ บรรทัดนี้: outer ถูก resolved แล้ว แต่ยังไม่ fulfilled
@@ -123,10 +124,10 @@ const cookSoupPromise = new Promise<string>((resolve, reject) => {
   setTimeout(() => {
     if (ingredientsAvailable) {
       // ✅ เพจเจอร์สั่นสีเขียว: ทำซุปเสร็จแล้ว!
-      resolve('ซุปต้มยำกุ้ง พร้อมเสิร์ฟ!');
+      resolve("ซุปต้มยำกุ้ง พร้อมเสิร์ฟ!");
     } else {
       // ❌ เพจเจอร์สั่นสีแดง: วัตถุดิบหมด!
-      reject(new Error('วัตถุดิบหมด ทำซุปไม่ได้'));
+      reject(new Error("วัตถุดิบหมด ทำซุปไม่ได้"));
     }
   }, 2000); // จำลองการทำอาหารที่ใช้เวลา 2 วินาที
 });
@@ -135,6 +136,7 @@ console.log(cookSoupPromise); // Promise { <pending> } — ยังไม่เ
 ```
 
 **ข้อสังเกต:**
+
 - `resolve(value)` — ทำให้ Promise กลายเป็น **Fulfilled** พร้อมกับ `value` นั้น
 - `reject(error)` — ทำให้ Promise กลายเป็น **Rejected** พร้อมกับ `error` นั้น
 - ฟังก์ชันใน `new Promise(...)` รันทันที แต่ resolve/reject อาจเกิดขึ้นในอนาคต
@@ -148,12 +150,11 @@ console.log(cookSoupPromise); // Promise { <pending> } — ยังไม่เ
 ### `.then()` — ทำอะไรเมื่อเพจเจอร์สั่นสีเขียว
 
 ```typescript
-cookSoupPromise
-  .then((soupName) => {
-    // soupName คือค่าที่ถูก resolve มา
-    console.log(`ยอดเยี่ยม! ได้รับ: ${soupName}`); // "ซุปต้มยำกุ้ง พร้อมเสิร์ฟ!"
-    console.log('นั่งลงที่โต๊ะ เตรียมตะเกียบได้เลย');
-  });
+cookSoupPromise.then((soupName) => {
+  // soupName คือค่าที่ถูก resolve มา
+  console.log(`ยอดเยี่ยม! ได้รับ: ${soupName}`); // "ซุปต้มยำกุ้ง พร้อมเสิร์ฟ!"
+  console.log("นั่งลงที่โต๊ะ เตรียมตะเกียบได้เลย");
+});
 ```
 
 ### `.catch()` — ทำอะไรเมื่อเพจเจอร์สั่นสีแดง (Error Handling)
@@ -189,7 +190,7 @@ cookSoupPromise
   .finally(() => {
     // ✅ รันเสมอ ไม่ว่าจะสำเร็จหรือล้มเหลว — เหมือนคืนเพจเจอร์ที่เคาน์เตอร์
     isLoading = false;
-    console.log('ปิด Loading Spinner แล้ว, เพจเจอร์ถูกคืนแล้ว');
+    console.log("ปิด Loading Spinner แล้ว, เพจเจอร์ถูกคืนแล้ว");
   });
 ```
 
@@ -228,8 +229,8 @@ const promiseA = new Promise((resolve) => {
   resolve(777); // resolve ทันที — แต่ .then() จะยังไม่รัน!
 });
 
-promiseA.then((val) => console.log('Async:', val)); // ถูกเพิ่มใน Job Queue
-console.log('Sync: immediate');                     // รันก่อน!
+promiseA.then((val) => console.log("Async:", val)); // ถูกเพิ่มใน Job Queue
+console.log("Sync: immediate"); // รันก่อน!
 
 // Output:
 // Sync: immediate        ← รันก่อน (synchronous)
@@ -268,18 +269,18 @@ function getUserOrdersThen(userId: number) {
       console.log(orders);
     })
     .catch((error) => {
-      console.error('Error:', error.message);
+      console.error("Error:", error.message);
     });
 }
 
 // --- แบบ async/await --- (Logic เดิม แต่อ่านง่ายกว่ามาก)
 async function getUserOrdersAsync(userId: number) {
   try {
-    const user = await fetchUser(userId);    // รอจนได้ user
+    const user = await fetchUser(userId); // รอจนได้ user
     const orders = await fetchOrders(user.id); // รอจนได้ orders
     console.log(orders);
   } catch (error) {
-    console.error('Error:', (error as Error).message);
+    console.error("Error:", (error as Error).message);
   }
 }
 ```
@@ -306,7 +307,7 @@ async function goodExample() {
 
 ```typescript
 async function getName(): Promise<string> {
-  return 'Nutta'; // ถูก wrap เป็น Promise.resolve('Nutta') อัตโนมัติ
+  return "Nutta"; // ถูก wrap เป็น Promise.resolve('Nutta') อัตโนมัติ
 }
 // เหมือนกับ: function getName() { return Promise.resolve('Nutta'); }
 ```
@@ -330,15 +331,15 @@ async function getFullMeal() {
   try {
     // รัน 3 Promise พร้อมกัน — ไม่รอทีละตัว!
     const [soup, steak, salad] = await Promise.all([
-      cookSoup(),    // ใช้เวลา 3 วินาที
-      cookSteak(),   // ใช้เวลา 5 วินาที
-      prepSalad(),   // ใช้เวลา 1 วินาที
+      cookSoup(), // ใช้เวลา 3 วินาที
+      cookSteak(), // ใช้เวลา 5 วินาที
+      prepSalad(), // ใช้เวลา 1 วินาที
     ]);
     // ✅ รอแค่ 5 วินาที (เท่ากับตัวที่นานที่สุด) ไม่ใช่ 9 วินาที (3+5+1)
     return { soup, steak, salad };
   } catch (error) {
     // ❌ ถ้า cookSteak() ล้มเหลว — ทั้งหมดจะ reject ทันที
-    console.error('ออร์เดอร์ถูกยกเลิก:', error.message);
+    console.error("ออร์เดอร์ถูกยกเลิก:", error.message);
   }
 }
 ```
@@ -356,13 +357,13 @@ async function getFullMeal() {
 ```typescript
 async function dashboardData() {
   const results = await Promise.allSettled([
-    fetchUserProfile(),  // อาจล้มเหลว
-    fetchUserStats(),    // อาจล้มเหลว
-    fetchUserPosts(),    // อาจล้มเหลว
+    fetchUserProfile(), // อาจล้มเหลว
+    fetchUserStats(), // อาจล้มเหลว
+    fetchUserPosts(), // อาจล้มเหลว
   ]);
 
   results.forEach((result, index) => {
-    if (result.status === 'fulfilled') {
+    if (result.status === "fulfilled") {
       console.log(`Task ${index} สำเร็จ:`, result.value);
     } else {
       // result.status === 'rejected'
@@ -383,9 +384,12 @@ async function dashboardData() {
 Return ผลลัพธ์ของ Promise **ตัวแรก** ที่ settle (ไม่ว่าจะ fulfilled หรือ rejected) ตัวอื่นๆ ถูกละเว้น
 
 ```typescript
-async function fetchWithTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+async function fetchWithTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+): Promise<T> {
   const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error(`หมดเวลา ${timeoutMs}ms`)), timeoutMs)
+    setTimeout(() => reject(new Error(`หมดเวลา ${timeoutMs}ms`)), timeoutMs),
   );
 
   // ใครเสร็จก่อนระหว่าง fetch จริง กับ timeout จำลอง?
@@ -418,7 +422,7 @@ async function fetchFromFastestServer(url: string) {
     return data;
   } catch (error) {
     // ❌ AggregateError — ทุก server ล้มเหลว
-    console.error('ทุก Server ไม่ตอบสนอง');
+    console.error("ทุก Server ไม่ตอบสนอง");
   }
 }
 ```
@@ -439,12 +443,12 @@ async function fetchFromFastestServer(url: string) {
 
 ### สรุปตาราง Combinators
 
-| Combinator | สำเร็จเมื่อ | ล้มเหลวเมื่อ | Use Case |
-|---|---|---|---|
-| `Promise.all` | ทุกตัว fulfilled | มีตัวใดตัวหนึ่ง reject | ต้องการทุกผลลัพธ์ |
-| `Promise.allSettled` | ทุกตัว settle แล้ว (ไม่มี reject) | ไม่มีวัน reject | ต้องการทุกผลลัพธ์ แม้บางตัว fail |
-| `Promise.race` | มีตัวใดตัวหนึ่ง settle | มีตัวใดตัวหนึ่ง settle | Timeout, Racing |
-| `Promise.any` | มีตัวใดตัวหนึ่ง fulfilled | ทุกตัว reject | Redundant services |
+| Combinator           | สำเร็จเมื่อ                       | ล้มเหลวเมื่อ           | Use Case                         |
+| -------------------- | --------------------------------- | ---------------------- | -------------------------------- |
+| `Promise.all`        | ทุกตัว fulfilled                  | มีตัวใดตัวหนึ่ง reject | ต้องการทุกผลลัพธ์                |
+| `Promise.allSettled` | ทุกตัว settle แล้ว (ไม่มี reject) | ไม่มีวัน reject        | ต้องการทุกผลลัพธ์ แม้บางตัว fail |
+| `Promise.race`       | มีตัวใดตัวหนึ่ง settle            | มีตัวใดตัวหนึ่ง settle | Timeout, Racing                  |
+| `Promise.any`        | มีตัวใดตัวหนึ่ง fulfilled         | ทุกตัว reject          | Redundant services               |
 
 ---
 
@@ -477,7 +481,7 @@ async function processInput(input: string | Promise<string>) {
 
 ```typescript
 // สร้าง rejected Promise ทันที
-const failed = Promise.reject(new Error('ไม่พบผู้ใช้'));
+const failed = Promise.reject(new Error("ไม่พบผู้ใช้"));
 failed.catch((err) => console.error(err.message)); // 'ไม่พบผู้ใช้'
 
 // Use case: Early return ในฟังก์ชัน async
@@ -485,7 +489,7 @@ async function getAdminUser(userId: number) {
   const user = await fetchUser(userId);
   if (!user.isAdmin) {
     // แทน throw new Error(...) ก็ได้ — แต่ Promise.reject ชัดเจนกว่าในบางบริบท
-    return Promise.reject(new Error('ผู้ใช้ไม่มีสิทธิ์ Admin'));
+    return Promise.reject(new Error("ผู้ใช้ไม่มีสิทธิ์ Admin"));
   }
   return user;
 }
@@ -515,13 +519,13 @@ const { promise, resolve, reject } = Promise.withResolvers<string>();
 // ตัวอย่าง Use case: ผูก Promise กับ Event Listener
 function waitForButtonClick(button: HTMLButtonElement): Promise<void> {
   const { promise, resolve } = Promise.withResolvers<void>();
-  button.addEventListener('click', () => resolve(), { once: true });
+  button.addEventListener("click", () => resolve(), { once: true });
   return promise;
 }
 
 // รอให้ผู้ใช้กดปุ่มก่อนค่อยดำเนินการต่อ
 await waitForButtonClick(submitButton);
-console.log('ผู้ใช้กดปุ่มแล้ว!');
+console.log("ผู้ใช้กดปุ่มแล้ว!");
 ```
 
 ---
@@ -534,9 +538,7 @@ console.log('ผู้ใช้กดปุ่มแล้ว!');
 // ❌ ปัญหา: ไม่รู้ว่า getConfig() sync หรือ async — จัดการ error ต่างกัน
 function processConfig(getConfig: () => Config | Promise<Config>) {
   // ถ้า getConfig() throw synchronously, .catch() ไม่จับได้!
-  return getConfig()
-    .then(validate)
-    .catch(handleError); // 💥 อาจพลาด sync error
+  return getConfig().then(validate).catch(handleError); // 💥 อาจพลาด sync error
 }
 
 // ✅ แก้ด้วย Promise.try()
@@ -551,16 +553,16 @@ function processConfig(getConfig: () => Config | Promise<Config>) {
 
 ### สรุป Static Methods ทั้งหมด
 
-| Method | ทำอะไร | ใช้เมื่อ |
-|---|---|---|
-| `Promise.resolve(v)` | สร้าง fulfilled Promise | Normalize input, wrap ค่าธรรมดา |
-| `Promise.reject(e)` | สร้าง rejected Promise | Early return, test error paths |
-| `Promise.all(arr)` | รอทุกตัว, fail-fast | Tasks ที่ต้องการทุกผลลัพธ์ |
-| `Promise.allSettled(arr)` | รอทุกตัว, ไม่ fail | Independent tasks, Dashboard |
-| `Promise.race(arr)` | ตัวแรกที่ settle | Timeout mechanism |
-| `Promise.any(arr)` | ตัวแรกที่ fulfilled | Redundant servers |
-| `Promise.withResolvers()` | แยก resolve/reject | Event-driven, Deferred pattern |
-| `Promise.try(fn)` | Wrap sync/async safely | Unknown function types |
+| Method                    | ทำอะไร                  | ใช้เมื่อ                        |
+| ------------------------- | ----------------------- | ------------------------------- |
+| `Promise.resolve(v)`      | สร้าง fulfilled Promise | Normalize input, wrap ค่าธรรมดา |
+| `Promise.reject(e)`       | สร้าง rejected Promise  | Early return, test error paths  |
+| `Promise.all(arr)`        | รอทุกตัว, fail-fast     | Tasks ที่ต้องการทุกผลลัพธ์      |
+| `Promise.allSettled(arr)` | รอทุกตัว, ไม่ fail      | Independent tasks, Dashboard    |
+| `Promise.race(arr)`       | ตัวแรกที่ settle        | Timeout mechanism               |
+| `Promise.any(arr)`        | ตัวแรกที่ fulfilled     | Redundant servers               |
+| `Promise.withResolvers()` | แยก resolve/reject      | Event-driven, Deferred pattern  |
+| `Promise.try(fn)`         | Wrap sync/async safely  | Unknown function types          |
 
 ---
 
@@ -572,14 +574,14 @@ function processConfig(getConfig: () => Config | Promise<Config>) {
 // ❌ BAD — ฟังก์ชันนี้รับ Promise แต่ไม่ได้รอผลลัพธ์
 async function createUser(name: string) {
   const user = saveUser(name); // ลืม await! user เป็น Promise ไม่ใช่ User object
-  console.log(user.id);        // 💥 undefined — Promise ไม่มี property .id
-  return user;                 // return Promise แทนที่จะ return User
+  console.log(user.id); // 💥 undefined — Promise ไม่มี property .id
+  return user; // return Promise แทนที่จะ return User
 }
 
 // ✅ GOOD
 async function createUser(name: string) {
   const user = await saveUser(name); // ✅ รอจนได้ User object จริงๆ
-  console.log(user.id);              // ✅ ได้ id จริงๆ
+  console.log(user.id); // ✅ ได้ id จริงๆ
   return user;
 }
 ```
@@ -614,7 +616,7 @@ async function getData() {
 //    และใน Node.js รุ่นใหม่ Process อาจจะ crash!
 async function loadPage() {
   const user = await fetchUser(userId); // ถ้า reject แล้วไม่มี try/catch...
-  renderPage(user);                     // บรรทัดนี้ไม่รันด้วย
+  renderPage(user); // บรรทัดนี้ไม่รันด้วย
 }
 // ไม่มีใคร catch error จาก loadPage()
 
@@ -631,7 +633,7 @@ async function loadPage() {
 
 // ✅ GOOD — อีกวิธีคือ .catch() ตอน call function
 loadPage().catch((error) => {
-  console.error('loadPage ล้มเหลว:', error.message);
+  console.error("loadPage ล้มเหลว:", error.message);
 });
 ```
 
@@ -643,8 +645,8 @@ loadPage().catch((error) => {
 // ❌ BAD — รวมเวลา 6 วินาที (รอ 1 ตัวเสร็จแล้วค่อยรันตัวถัดไป)
 async function slowDashboard(userId: number) {
   const profile = await fetchProfile(userId); // รอ 2 วินาที
-  const stats   = await fetchStats(userId);   // รอ 2 วินาที อีกที
-  const posts   = await fetchPosts(userId);   // รอ 2 วินาที อีกที
+  const stats = await fetchStats(userId); // รอ 2 วินาที อีกที
+  const posts = await fetchPosts(userId); // รอ 2 วินาที อีกที
   return { profile, stats, posts };
 }
 
@@ -664,12 +666,14 @@ async function fastDashboard(userId: number) {
 ## สรุป — Checklist ของ Promise Master
 
 **พื้นฐาน (Foundation)**
+
 - [ ] **เข้าใจ 4 คำศัพท์**: Pending, Fulfilled, Rejected, Settled — และความต่างของ "Resolved" vs "Fulfilled"
 - [ ] **จัดการ error เสมอ**: ใช้ `.catch()` หรือ `try/catch` กับทุก Promise
 - [ ] **ใช้ `async/await`** เป็นหลักเพื่อความอ่านง่าย
 - [ ] **อย่าลืม `await`** เวลาเรียก async function
 
 **Concurrency (การรันพร้อมกัน)**
+
 - [ ] **ใช้ `Promise.all`** เมื่อ tasks เป็นอิสระต่อกันและต้องการทุกผลลัพธ์
 - [ ] **ใช้ `Promise.allSettled`** เมื่อต้องการรายงานผลทุกตัวแม้บางตัว fail
 - [ ] **ใช้ `Promise.race`** สำหรับ Timeout mechanism
@@ -677,6 +681,7 @@ async function fastDashboard(userId: number) {
 - [ ] **เข้าใจว่า JS เป็น Single-threaded** — Concurrency ≠ Parallelism
 
 **Utilities & Patterns (ระดับ Senior)**
+
 - [ ] **รู้จัก `Promise.resolve/reject`** สำหรับ normalize และ wrap values
 - [ ] **รู้จัก `Promise.withResolvers()`** สำหรับ Event-driven และ Deferred patterns
 - [ ] **รู้จัก `Promise.try()`** สำหรับ wrap code ที่ไม่รู้ว่า sync หรือ async

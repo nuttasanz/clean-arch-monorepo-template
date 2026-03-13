@@ -18,9 +18,8 @@ clientAxios.interceptors.response.use(
   (response) => response,
   async (error: unknown) => {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      const { useAuthStore } = await import(
-        "@/features/auth/stores/auth.store"
-      );
+      const { useAuthStore } =
+        await import("@/features/auth/stores/auth.store");
       useAuthStore.getState().clearUser();
       window.location.href = "/login";
     }

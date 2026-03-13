@@ -7,7 +7,9 @@ import {
   type RegisterClientResponse,
 } from "../types/auth.types";
 
-export async function loginUser(data: LoginUserDTO): Promise<LoginClientResponse> {
+export async function loginUser(
+  data: LoginUserDTO,
+): Promise<LoginClientResponse> {
   const response = await clientAxios.post<unknown>("/api/auth/login", data);
   return loginClientResponseSchema.parse(response.data);
 }
