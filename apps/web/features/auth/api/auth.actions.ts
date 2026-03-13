@@ -37,9 +37,7 @@ export async function loginAction(
     );
   } catch (error: unknown) {
     const message =
-      typeof error === "object" &&
-      error !== null &&
-      "response" in error
+      typeof error === "object" && error !== null && "response" in error
         ? ((error as { response?: { data?: { message?: string } } }).response
             ?.data?.message ?? "Login failed")
         : "An internal server error occurred";
@@ -82,9 +80,7 @@ export async function registerAction(
     );
   } catch (error: unknown) {
     const message =
-      typeof error === "object" &&
-      error !== null &&
-      "response" in error
+      typeof error === "object" && error !== null && "response" in error
         ? ((error as { response?: { data?: { message?: string } } }).response
             ?.data?.message ?? "Registration failed")
         : "An internal server error occurred";
