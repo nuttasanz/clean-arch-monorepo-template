@@ -44,7 +44,7 @@ app.use(express.json());
 app.use(routes);
 
 // Catch-all 404 handler (must be after routes, before error handler)
-app.use("*", (_req, _res, next) => {
+app.use((_req, _res, next) => {
   next(new AppError("API Route Not Found", 404));
 });
 
