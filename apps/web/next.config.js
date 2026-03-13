@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  transpilePackages: ["@my-project/shared-schema"],
+};
 
-export default nextConfig;
+module.exports = nextConfig;

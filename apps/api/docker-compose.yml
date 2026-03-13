@@ -1,0 +1,18 @@
+version: '3.8' # เวอร์ชันของ Docker Compose
+
+services:
+  db:
+    image: postgres:16-alpine # ใช้ Image PostgreSQL 16 รุ่น Alpine (ตัวเล็กและเร็ว)
+    container_name: badminton_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123 # ในงานจริงต้องใช้ Environment Variable
+      POSTGRES_DB: badminton_db
+    ports:
+      - "5432:5432" # Mapping (เครื่องเรา:ใน Container)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # เก็บข้อมูลไว้ในเครื่องเรา ไม่ให้หายตอนปิด
+
+volumes:
+  postgres_data: # ประกาศ Volume เพื่อเก็บ Data อย่างถาวร
