@@ -1,13 +1,5 @@
-import { UserRole } from "@my-project/shared-schema";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div>
-      <h1>Web App</h1>
-      <p>
-        Shared schema loaded successfully. User roles:{" "}
-        {Object.values(UserRole).join(", ")}
-      </p>
-    </div>
-  );
+  redirect("/login");
 }

@@ -1,3 +1,7 @@
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+import { Providers } from "@/providers/providers";
+
 export const metadata = {
   title: "My Project",
   description: "Monorepo boilerplate with shared schemas",
@@ -10,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
