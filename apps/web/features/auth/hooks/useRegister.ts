@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { notifications } from "@mantine/notifications";
 import { registerUser } from "../api/auth.repository";
 import type { RegisterUserDTO } from "@my-project/shared-schema";
-import axios from "axios";
 
 export function useRegister() {
   const router = useRouter();
@@ -21,10 +20,10 @@ export function useRegister() {
       router.push("/login");
     },
     onError: (error: unknown) => {
-      const message = axios.isAxiosError(error)
-        ? ((error.response?.data as { message?: string })?.message ??
-          "Registration failed. Please try again.")
-        : "An unexpected error occurred.";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred.";
       notifications.show({
         color: "red",
         title: "Registration failed",

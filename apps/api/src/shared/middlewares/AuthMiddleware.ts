@@ -2,18 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { AppError } from "../errors/AppError";
 import { UserRole } from "@modules/user/enum/user-role.enum";
+import { env } from "@infra/config/env";
 
 interface IPayload {
   sub: string;
   role: string;
-}
-
-function getJwtSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error("JWT_SECRET environment variable is required");
-  }
-  return secret;
 }
 
 export function ensureAuthenticated(
@@ -30,7 +23,7 @@ export function ensureAuthenticated(
   const [, token] = authHeader.split(" ");
 
   try {
-    const { sub, role } = jwt.verify(token, getJwtSecret()) as IPayload;
+    const { sub, role } = jwt.verify(token, env.JWT_SECRET) as IPayload;
 
     request.user = {
       id: sub,

@@ -1,5 +1,6 @@
 import { Pool } from "pg";
 import { logger } from "@shared/utils/Logger";
+import { env } from "../config/env";
 
 class DbProvider {
   private static pool: Pool;
@@ -7,11 +8,11 @@ class DbProvider {
   public static async getConnection(): Promise<Pool> {
     if (!this.pool) {
       this.pool = new Pool({
-        host: process.env.DB_HOST || "localhost",
-        port: Number(process.env.DB_PORT) || 5432,
-        user: process.env.DB_USER || "postgres",
-        password: process.env.DB_PASSWORD || "postgres",
-        database: process.env.DB_NAME || "badminton_nexus",
+        host: env.DB_HOST,
+        port: env.DB_PORT,
+        user: env.DB_USER,
+        password: env.DB_PASSWORD,
+        database: env.DB_NAME,
       });
 
       // Test connection

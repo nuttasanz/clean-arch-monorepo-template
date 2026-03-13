@@ -1,8 +1,9 @@
 import { app } from "./app";
 import { logger } from "@shared/utils/Logger";
 import { DbProvider } from "../database/DbProvider";
+import { env } from "../config/env";
 
-const PORT = process.env.PORT || 3333;
+const PORT = env.PORT;
 
 const server = app.listen(PORT, () => {
   logger.info(`Server started on port ${PORT} 🚀`);

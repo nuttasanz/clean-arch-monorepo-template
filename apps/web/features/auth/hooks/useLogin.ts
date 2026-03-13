@@ -6,7 +6,6 @@ import { notifications } from "@mantine/notifications";
 import { loginUser } from "../api/auth.repository";
 import { useAuthStore } from "../stores/auth.store";
 import type { LoginUserDTO } from "@my-project/shared-schema";
-import axios from "axios";
 
 export function useLogin() {
   const router = useRouter();
@@ -19,10 +18,10 @@ export function useLogin() {
       router.push("/");
     },
     onError: (error: unknown) => {
-      const message = axios.isAxiosError(error)
-        ? ((error.response?.data as { message?: string })?.message ??
-          "Login failed. Please try again.")
-        : "An unexpected error occurred.";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred.";
       notifications.show({
         color: "red",
         title: "Login failed",

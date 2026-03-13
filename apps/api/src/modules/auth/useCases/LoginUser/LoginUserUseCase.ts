@@ -5,6 +5,7 @@ import { IUserRepository } from "@modules/user/repositories/IUserRepository";
 import { LoginUserDTO } from "./LoginUserDTO";
 import { AppError } from "@shared/errors/AppError";
 import { User } from "@modules/user/domain/User";
+import { env } from "@infra/config/env";
 
 interface IResponse {
   user: Omit<User, "password" | "toPublic">;
@@ -31,16 +32,11 @@ export class LoginUserUseCase {
       throw new AppError("Username or password incorrect", 401);
     }
 
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      throw new Error("JWT_SECRET environment variable is required");
-    }
-
     const token = jwt.sign(
       {
         role: user.role,
       },
-      secret,
+      env.JWT_SECRET,
       {
         subject: user.id,
         expiresIn: "1d",
