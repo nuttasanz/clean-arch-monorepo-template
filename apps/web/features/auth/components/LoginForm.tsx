@@ -57,7 +57,7 @@ export function LoginForm() {
           <Stack gap="sm">
             <TextInput
               label="Username"
-              placeholder="your_username"
+              placeholder="Your Username"
               required
               data-testid="login-username"
               aria-label="Username"

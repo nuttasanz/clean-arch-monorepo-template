@@ -52,7 +52,7 @@ export function RegisterForm() {
           <Stack gap="sm">
             <TextInput
               label="Username"
-              placeholder="your_username"
+              placeholder="Your Username"
               required
               data-testid="register-username"
               aria-label="Username"
@@ -62,7 +62,7 @@ export function RegisterForm() {
             <TextInput
               label="Email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="email@example.com"
               required
               data-testid="register-email"
               aria-label="Email address"
