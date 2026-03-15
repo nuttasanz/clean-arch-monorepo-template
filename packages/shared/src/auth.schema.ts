@@ -21,3 +21,17 @@ export const registerClientResponseSchema = z.object({
 export type AuthUser = z.infer<typeof authUserSchema>;
 export type LoginClientResponse = z.infer<typeof loginClientResponseSchema>;
 export type RegisterClientResponse = z.infer<typeof registerClientResponseSchema>;
+
+/** Shape of the backend login/register response (accessToken in body, refreshToken in HttpOnly cookie). */
+export const loginBackendResponseSchema = z.object({
+  accessToken: z.string(),
+  user: authUserSchema,
+});
+
+/** Shape of the backend refresh response. */
+export const refreshBackendResponseSchema = z.object({
+  accessToken: z.string(),
+});
+
+export type LoginBackendResponse = z.infer<typeof loginBackendResponseSchema>;
+export type RefreshBackendResponse = z.infer<typeof refreshBackendResponseSchema>;

@@ -3,27 +3,32 @@ export interface IValidationError {
   message: string;
 }
 
-export interface IApiResponse<T = unknown> {
-  status: "success" | "error";
-  message: string;
-  data?: T;
-  errors?: IValidationError[];
+export type AppErrorCode =
+  | 'INTERNAL_SERVER_ERROR'
+  | 'VALIDATION_ERROR'
+  | 'NOT_FOUND'
+  | 'UNAUTHORIZED'
+  | 'FORBIDDEN'
+  | 'CONFLICT'
+  | 'BAD_REQUEST'
+  | 'UNPROCESSABLE_ENTITY';
+
+export interface ApiMeta {
+  traceId: string;
 }
 
-export class ApiResponse {
-  static success<T>(message: string, data?: T): IApiResponse<T> {
-    return {
-      status: "success",
-      message,
-      data,
-    };
-  }
+export interface ApiSuccessResponse<T = unknown> {
+  data: T;
+  meta: ApiMeta;
+}
 
-  static error(message: string, errors?: IValidationError[]): IApiResponse {
-    return {
-      status: "error",
-      message,
-      errors,
-    };
-  }
+export interface ApiErrorBody {
+  message: string;
+  code: AppErrorCode;
+  details?: IValidationError[];
+}
+
+export interface ApiErrorResponse {
+  error: ApiErrorBody;
+  meta: ApiMeta;
 }

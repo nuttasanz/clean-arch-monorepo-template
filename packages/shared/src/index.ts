@@ -23,9 +23,12 @@ export {
 
 // API Response
 export {
-  ApiResponse,
-  type IApiResponse,
   type IValidationError,
+  type AppErrorCode,
+  type ApiMeta,
+  type ApiSuccessResponse,
+  type ApiErrorBody,
+  type ApiErrorResponse,
 } from "./api-response";
 
 // Auth schemas & response types
@@ -33,7 +36,11 @@ export {
   authUserSchema,
   loginClientResponseSchema,
   registerClientResponseSchema,
+  loginBackendResponseSchema,
+  refreshBackendResponseSchema,
   type AuthUser,
   type LoginClientResponse,
   type RegisterClientResponse,
+  type LoginBackendResponse,
+  type RefreshBackendResponse,
 } from "./auth.schema";
