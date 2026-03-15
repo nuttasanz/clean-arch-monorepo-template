@@ -8,8 +8,9 @@ export const authUserSchema = z.object({
   role: z.nativeEnum(UserRole),
 });
 
-/** Shape of the BFF login response (token is never sent to client JS). */
+/** Shape of the BFF login response (accessToken stored in memory, refreshToken in HttpOnly cookie). */
 export const loginClientResponseSchema = z.object({
+  accessToken: z.string(),
   user: authUserSchema,
 });
 

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { validateEnv } from '../../config/env';
-import { DrizzleModule } from '../../infrastructure/database/drizzle.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { RefreshTokenRepository } from './refresh-token.repository';
@@ -9,7 +8,6 @@ import { UserRepository } from './user.repository';
 
 @Module({
   imports: [
-    DrizzleModule,
     JwtModule.registerAsync({
       useFactory: () => {
         const env = validateEnv();

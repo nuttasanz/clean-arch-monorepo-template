@@ -10,11 +10,13 @@ import type { LoginUserDTO } from "@repo/shared";
 export function useLogin() {
   const router = useRouter();
   const setUser = useAuthStore((s) => s.setUser);
+  const setAccessToken = useAuthStore((s) => s.setAccessToken);
 
   return useMutation({
     mutationFn: (data: LoginUserDTO) => loginUser(data),
-    onSuccess: ({ user }) => {
+    onSuccess: ({ user, accessToken }) => {
       setUser(user);
+      setAccessToken(accessToken);
       router.push("/");
     },
     onError: (error: unknown) => {

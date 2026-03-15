@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import 'reflect-metadata';
 import { randomUUID } from 'crypto';
 import type { IncomingMessage } from 'http';

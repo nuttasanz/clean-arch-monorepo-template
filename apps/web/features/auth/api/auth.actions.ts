@@ -7,23 +7,35 @@ import {
   registerUserSchema,
   type LoginUserDTO,
   type RegisterUserDTO,
-  type IApiResponse,
+  type ApiSuccessResponse,
+  type LoginBackendResponse,
 } from "@repo/shared";
 import { loginClientResponseSchema } from "../types/auth.types";
-import type { AuthUser } from "../types/auth.types";
+import type { LoginClientResponse } from "../types/auth.types";
 
-interface LoginBackendData {
-  token: string;
-  user: {
-    id: string;
-    username: string;
-    role: string;
-  };
+/**
+ * Extracts a cookie value from an array of Set-Cookie header strings.
+ * e.g. "refreshToken=abc123; Path=/; HttpOnly" → "abc123"
+ */
+function extractSetCookieValue(
+  headers: string[] | undefined,
+  name: string,
+): string | null {
+  for (const h of headers ?? []) {
+    const semicolonIdx = h.indexOf(";");
+    const pair = semicolonIdx === -1 ? h : h.slice(0, semicolonIdx);
+    const eqIdx = pair.indexOf("=");
+    if (eqIdx === -1) continue;
+    const k = pair.slice(0, eqIdx).trim();
+    const v = pair.slice(eqIdx + 1).trim();
+    if (k === name) return v || null;
+  }
+  return null;
 }
 
 export async function loginAction(
   data: LoginUserDTO,
-): Promise<{ user: AuthUser }> {
+): Promise<LoginClientResponse> {
   const parsed = loginUserSchema.safeParse(data);
   if (!parsed.success) {
     throw new Error(parsed.error.issues[0]?.message ?? "Validation failed");
@@ -31,37 +43,41 @@ export async function loginAction(
 
   let backendResponse;
   try {
-    backendResponse = await serverAxios.post<IApiResponse<LoginBackendData>>(
-      "/api/v1/auth/login",
-      parsed.data,
-    );
+    backendResponse = await serverAxios.post<
+      ApiSuccessResponse<LoginBackendResponse>
+    >("/api/v1/auth/login", parsed.data);
   } catch (error: unknown) {
     const message =
       typeof error === "object" && error !== null && "response" in error
-        ? ((error as { response?: { data?: { message?: string } } }).response
-            ?.data?.message ?? "Login failed")
+        ? ((error as { response?: { data?: { error?: { message?: string } } } })
+            .response?.data?.error?.message ?? "Login failed")
         : "An internal server error occurred";
     throw new Error(message);
   }
 
   const { data: responseBody } = backendResponse;
+  const { accessToken, user } = responseBody.data;
 
-  if (responseBody.status !== "success" || !responseBody.data) {
-    throw new Error(responseBody.message ?? "Login failed");
-  }
-
-  const { token, user } = responseBody.data;
+  // Forward the rotating refreshToken from the backend Set-Cookie header into
+  // the Next.js layer as an HttpOnly cookie accessible to BFF route handlers.
+  const setCookieHeaders = backendResponse.headers["set-cookie"] as
+    | string[]
+    | undefined;
+  const refreshToken = extractSetCookieValue(setCookieHeaders, "refreshToken");
 
   const cookieStore = await cookies();
-  cookieStore.set("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-  });
 
-  return loginClientResponseSchema.parse({ user });
+  if (refreshToken) {
+    cookieStore.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+  }
+
+  return loginClientResponseSchema.parse({ accessToken, user });
 }
 
 export async function registerAction(
@@ -74,24 +90,47 @@ export async function registerAction(
 
   let backendResponse;
   try {
-    backendResponse = await serverAxios.post<IApiResponse<unknown>>(
+    backendResponse = await serverAxios.post<ApiSuccessResponse<unknown>>(
       "/api/v1/auth/register",
       parsed.data,
     );
   } catch (error: unknown) {
     const message =
       typeof error === "object" && error !== null && "response" in error
-        ? ((error as { response?: { data?: { message?: string } } }).response
-            ?.data?.message ?? "Registration failed")
+        ? ((error as { response?: { data?: { error?: { message?: string } } } })
+            .response?.data?.error?.message ?? "Registration failed")
         : "An internal server error occurred";
     throw new Error(message);
   }
 
   const { data: responseBody } = backendResponse;
-  return { message: responseBody.message ?? "Registration successful" };
+  return {
+    message:
+      typeof responseBody === "object" &&
+      responseBody !== null &&
+      "meta" in responseBody
+        ? "Registration successful"
+        : "Registration successful",
+  };
 }
 
 export async function logoutAction(): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.delete("token");
+  const refreshToken = cookieStore.get("refreshToken")?.value;
+
+  if (refreshToken) {
+    // Best-effort: tell the backend to revoke the refresh token.
+    // We don't throw if this fails — cookie deletion below always runs.
+    try {
+      await serverAxios.post(
+        "/api/v1/auth/logout",
+        {},
+        { headers: { Cookie: `refreshToken=${refreshToken}` } },
+      );
+    } catch {
+      // ignore — backend may be unreachable; cookie is deleted regardless
+    }
+  }
+
+  cookieStore.delete("refreshToken");
 }
