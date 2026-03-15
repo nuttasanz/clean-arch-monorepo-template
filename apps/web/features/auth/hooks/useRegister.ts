@@ -11,7 +11,7 @@ export function useRegister() {
 
   return useMutation({
     mutationFn: (data: RegisterUserDTO) => registerUser(data),
-    onSuccess: ({}) => {
+    onSuccess: () => {
       notifications.show({
         color: 'green',
         title: 'Registration successful!',
