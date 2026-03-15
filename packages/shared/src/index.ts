@@ -35,12 +35,10 @@ export {
 export {
   authUserSchema,
   loginClientResponseSchema,
-  registerClientResponseSchema,
   loginBackendResponseSchema,
   refreshBackendResponseSchema,
   type AuthUser,
   type LoginClientResponse,
-  type RegisterClientResponse,
   type LoginBackendResponse,
   type RefreshBackendResponse,
 } from "./auth.schema";

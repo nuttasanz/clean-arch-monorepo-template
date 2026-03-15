@@ -5,7 +5,7 @@ import { UserRole } from "./enums/user-role.enum";
 export const authUserSchema = z.object({
   id: z.string(),
   username: z.string(),
-  role: z.nativeEnum(UserRole),
+  role: z.enum(Object.values(UserRole) as [UserRole, ...UserRole[]]),
 });
 
 /** Shape of the BFF login response (accessToken stored in memory, refreshToken in HttpOnly cookie). */
@@ -14,14 +14,8 @@ export const loginClientResponseSchema = z.object({
   user: authUserSchema,
 });
 
-/** Shape of the BFF register response. */
-export const registerClientResponseSchema = z.object({
-  message: z.string(),
-});
-
 export type AuthUser = z.infer<typeof authUserSchema>;
 export type LoginClientResponse = z.infer<typeof loginClientResponseSchema>;
-export type RegisterClientResponse = z.infer<typeof registerClientResponseSchema>;
 
 /** Shape of the backend login/register response (accessToken in body, refreshToken in HttpOnly cookie). */
 export const loginBackendResponseSchema = z.object({
