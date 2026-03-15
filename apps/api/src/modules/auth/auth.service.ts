@@ -6,9 +6,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import type { FastifyReply } from 'fastify';
 import * as argon2 from 'argon2';
-import type { LoginBackendResponse, LoginUserDTO, RefreshBackendResponse, RegisterUserDTO } from '@repo/shared';
+import type { LoginUserDTO, RegisterUserDTO, UserRole } from '@repo/shared';
 import type { DrizzleDb } from '../../infrastructure/database/drizzle.provider';
 import { DRIZZLE } from '../../infrastructure/database/drizzle.provider';
 import type { Env } from '../../config/env';
@@ -22,8 +21,16 @@ export interface JwtPayload {
   role: string;
 }
 
-const REFRESH_COOKIE = 'refreshToken';
-const COOKIE_PATH = '/api/v1/auth';
+export interface LoginServiceResult {
+  accessToken: string;
+  refreshToken: string;
+  user: { id: string; username: string; role: UserRole };
+}
+
+export interface RefreshServiceResult {
+  accessToken: string;
+  refreshToken: string;
+}
 
 function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex');
@@ -42,7 +49,7 @@ export class AuthService {
     this.env = validateEnv();
   }
 
-  async register(dto: RegisterUserDTO): Promise<LoginBackendResponse> {
+  async register(dto: RegisterUserDTO): Promise<LoginServiceResult> {
     const [existingByUsername, existingByEmail] = await Promise.all([
       this.userRepo.findByUsername(this.db, dto.username),
       this.userRepo.findByEmail(this.db, dto.email),
@@ -67,12 +74,25 @@ export class AuthService {
     });
 
     const payload: JwtPayload = { sub: user.id, username: user.username, role: user.role };
-    const accessToken = await this.jwtService.signAsync(payload);
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload),
+      this.jwtService.signAsync(payload, {
+        secret: this.env.JWT_REFRESH_SECRET,
+        expiresIn: this.env.JWT_REFRESH_EXPIRES_IN,
+      }),
+    ]);
 
-    return { accessToken, user: { id: user.id, username: user.username, role: user.role } };
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    await this.refreshTokenRepo.create(this.db, {
+      userId: user.id,
+      tokenHash: hashToken(refreshToken),
+      expiresAt,
+    });
+
+    return { accessToken, refreshToken, user: { id: user.id, username: user.username, role: user.role } };
   }
 
-  async login(dto: LoginUserDTO, reply: FastifyReply): Promise<LoginBackendResponse> {
+  async login(dto: LoginUserDTO): Promise<LoginServiceResult> {
     const user = await this.userRepo.findByUsername(this.db, dto.username);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -99,12 +119,10 @@ export class AuthService {
       expiresAt,
     });
 
-    this.setRefreshCookie(reply, refreshToken);
-
-    return { accessToken, user: { id: user.id, username: user.username, role: user.role } };
+    return { accessToken, refreshToken, user: { id: user.id, username: user.username, role: user.role } };
   }
 
-  async refresh(rawToken: string | undefined, reply: FastifyReply): Promise<RefreshBackendResponse> {
+  async refresh(rawToken: string | undefined): Promise<RefreshServiceResult> {
     if (!rawToken) {
       throw new UnauthorizedException('Refresh token missing');
     }
@@ -143,12 +161,10 @@ export class AuthService {
       });
     });
 
-    this.setRefreshCookie(reply, newRefreshToken);
-
-    return { accessToken: newAccessToken };
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 
-  async logout(rawToken: string | undefined, reply: FastifyReply): Promise<void> {
+  async logout(rawToken: string | undefined): Promise<void> {
     if (rawToken) {
       try {
         const payload = await this.jwtService.verifyAsync<JwtPayload>(rawToken, {
@@ -161,17 +177,5 @@ export class AuthService {
         await this.refreshTokenRepo.revoke(this.db, tokenHash);
       }
     }
-
-    reply.clearCookie(REFRESH_COOKIE, { path: COOKIE_PATH });
-  }
-
-  private setRefreshCookie(reply: FastifyReply, token: string): void {
-    void reply.setCookie(REFRESH_COOKIE, token, {
-      httpOnly: true,
-      secure: this.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: COOKIE_PATH,
-      maxAge: 7 * 24 * 60 * 60,
-    });
   }
 }
