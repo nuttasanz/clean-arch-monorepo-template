@@ -14,6 +14,7 @@ async function bootstrap(): Promise<void> {
     AppModule,
     new FastifyAdapter(),
   );
+  app.enableShutdownHooks();
   await app.listen(env.PORT, '0.0.0.0');
 }
 
