@@ -27,3 +27,13 @@ export {
   type IApiResponse,
   type IValidationError,
 } from "./api-response";
+
+// Auth schemas & response types
+export {
+  authUserSchema,
+  loginClientResponseSchema,
+  registerClientResponseSchema,
+  type AuthUser,
+  type LoginClientResponse,
+  type RegisterClientResponse,
+} from "./auth.schema";

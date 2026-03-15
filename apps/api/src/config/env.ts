@@ -1,7 +1,9 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const envSchema = z.object({
-  BACKEND_API_URL: z.string().url("BACKEND_API_URL must be a valid URL"),
+  DATABASE_URL: z.url(),
+  PORT: z.coerce.number().int().positive().default(3001),
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -10,11 +12,9 @@ export function validateEnv(): Env {
   const result = envSchema.safeParse(process.env);
   if (!result.success) {
     const formatted = result.error.issues
-      .map((i) => `  ${i.path.join(".")}: ${i.message}`)
-      .join("\n");
+      .map((i) => `  ${i.path.join('.')}: ${i.message}`)
+      .join('\n');
     throw new Error(`Environment validation failed:\n${formatted}`);
   }
   return result.data;
 }
-
-export const env = validateEnv();
