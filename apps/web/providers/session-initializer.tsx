@@ -27,7 +27,7 @@ export function SessionInitializer() {
     if (useAuthStore.getState().user !== null) return;
 
     axios
-      .post<{ data: { accessToken: string } }>("/api/auth/refresh")
+      .post<{ data: { accessToken: string } }>("/api/v1/auth/refresh")
       .then(({ data }) => {
         const token = data.data.accessToken;
 

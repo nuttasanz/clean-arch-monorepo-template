@@ -89,7 +89,7 @@ clientAxios.interceptors.response.use(
     try {
       // Use a plain axios call (not clientAxios) to avoid interceptor recursion.
       const { data } = await axios.post<{ data: { accessToken: string } }>(
-        "/api/auth/refresh",
+        "/api/v1/auth/refresh",
       );
       const newToken = data.data.accessToken;
 

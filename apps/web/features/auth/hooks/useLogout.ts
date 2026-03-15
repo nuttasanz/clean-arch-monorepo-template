@@ -10,7 +10,7 @@ export function useLogout() {
   const clearUser = useAuthStore((s) => s.clearUser);
 
   return useMutation({
-    mutationFn: () => clientAxios.post("/api/auth/logout"),
+    mutationFn: () => clientAxios.post("/api/v1/auth/logout"),
     // onSettled (not onSuccess) — always clear state and redirect,
     // even if the backend revocation call fails.
     onSettled: () => {
