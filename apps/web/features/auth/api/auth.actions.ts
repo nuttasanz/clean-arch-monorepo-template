@@ -82,7 +82,7 @@ export async function loginAction(
 
 export async function registerAction(
   data: RegisterUserDTO,
-): Promise<{ message: string }> {
+): Promise<LoginClientResponse> {
   const parsed = registerUserSchema.safeParse(data);
   if (!parsed.success) {
     throw new Error(parsed.error.issues[0]?.message ?? "Validation failed");
@@ -90,10 +90,9 @@ export async function registerAction(
 
   let backendResponse;
   try {
-    backendResponse = await serverAxios.post<ApiSuccessResponse<unknown>>(
-      "/api/v1/auth/register",
-      parsed.data,
-    );
+    backendResponse = await serverAxios.post<
+      ApiSuccessResponse<LoginBackendResponse>
+    >("/api/v1/auth/register", parsed.data);
   } catch (error: unknown) {
     const message =
       typeof error === "object" && error !== null && "response" in error
@@ -104,14 +103,26 @@ export async function registerAction(
   }
 
   const { data: responseBody } = backendResponse;
-  return {
-    message:
-      typeof responseBody === "object" &&
-      responseBody !== null &&
-      "meta" in responseBody
-        ? "Registration successful"
-        : "Registration successful",
-  };
+  const { accessToken, user } = responseBody.data;
+
+  const setCookieHeaders = backendResponse.headers["set-cookie"] as
+    | string[]
+    | undefined;
+  const refreshToken = extractSetCookieValue(setCookieHeaders, "refreshToken");
+
+  const cookieStore = await cookies();
+
+  if (refreshToken) {
+    cookieStore.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+  }
+
+  return loginClientResponseSchema.parse({ accessToken, user });
 }
 
 export async function logoutAction(): Promise<void> {
