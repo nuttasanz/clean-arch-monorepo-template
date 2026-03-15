@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { UserRole } from "@my-project/shared-schema";
+import { UserRole } from "@repo/shared";
 
 /**
  * Zod schema for the user object returned by our BFF to the client.

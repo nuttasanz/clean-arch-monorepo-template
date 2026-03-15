@@ -8,7 +8,7 @@ import {
   type LoginUserDTO,
   type RegisterUserDTO,
   type IApiResponse,
-} from "@my-project/shared-schema";
+} from "@repo/shared";
 import { loginClientResponseSchema } from "../types/auth.types";
 import type { AuthUser } from "../types/auth.types";
 

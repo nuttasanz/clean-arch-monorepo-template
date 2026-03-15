@@ -14,7 +14,7 @@ import {
 import { useForm } from "@mantine/form";
 import { zodResolver } from "@/lib/zod-resolver";
 import Link from "next/link";
-import { loginUserSchema, type LoginUserDTO } from "@my-project/shared-schema";
+import { loginUserSchema, type LoginUserDTO } from "@repo/shared";
 import { useLogin } from "../hooks/useLogin";
 import axios from "axios";
 

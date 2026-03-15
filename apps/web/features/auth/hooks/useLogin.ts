@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { notifications } from "@mantine/notifications";
 import { loginUser } from "../api/auth.repository";
 import { useAuthStore } from "../stores/auth.store";
-import type { LoginUserDTO } from "@my-project/shared-schema";
+import type { LoginUserDTO } from "@repo/shared";
 
 export function useLogin() {
   const router = useRouter();

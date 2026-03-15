@@ -17,7 +17,7 @@ import Link from "next/link";
 import {
   registerUserSchema,
   type RegisterUserDTO,
-} from "@my-project/shared-schema";
+} from "@repo/shared";
 import { useRegister } from "../hooks/useRegister";
 
 export function RegisterForm() {

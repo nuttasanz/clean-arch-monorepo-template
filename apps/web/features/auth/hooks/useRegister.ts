@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { notifications } from "@mantine/notifications";
 import { registerUser } from "../api/auth.repository";
-import type { RegisterUserDTO } from "@my-project/shared-schema";
+import type { RegisterUserDTO } from "@repo/shared";
 
 export function useRegister() {
   const router = useRouter();
