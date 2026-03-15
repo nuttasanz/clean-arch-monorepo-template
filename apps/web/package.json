@@ -6,6 +6,8 @@
     "dev": "next dev --turbopack --port 3000",
     "build": "next build",
     "start": "next start",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "lint": "next lint",
     "check-types": "tsc --noEmit"
   },
@@ -31,6 +33,9 @@
     "postcss": "^8.5.3",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^1.6.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "jsdom": "^24.0.0"
   }
 }

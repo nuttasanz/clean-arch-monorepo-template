@@ -2,7 +2,7 @@
 FROM node:20-alpine AS pruner
 
 RUN apk add --no-cache libc6-compat
-RUN corepack enable && corepack prepare pnpm@8.15.9 --activate
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 
 WORKDIR /app
 COPY . .
@@ -12,7 +12,7 @@ RUN pnpm dlx turbo@2 prune @repo/web --docker
 FROM node:20-alpine AS installer
 
 RUN apk add --no-cache libc6-compat
-RUN corepack enable && corepack prepare pnpm@8.15.9 --activate
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 
 WORKDIR /app
 
@@ -25,6 +25,10 @@ COPY --from=pruner /app/out/full/ .
 
 # Ensure public directory exists (may not exist yet)
 RUN mkdir -p apps/web/public
+
+# env.ts validates BACKEND_API_URL at import time during next build
+ARG BACKEND_API_URL
+ENV BACKEND_API_URL=$BACKEND_API_URL
 
 RUN pnpm turbo build --filter=@repo/web...
 
