@@ -45,9 +45,10 @@ WORKDIR /app
 # Copy production node_modules (root — contains @repo/shared symlink)
 COPY --from=installer --chown=nodejs:nodejs /app/node_modules ./node_modules
 
-# Copy shared package build output
+# Copy shared package build output + its node_modules (zod and other deps)
 COPY --from=installer --chown=nodejs:nodejs /app/packages/shared/dist ./packages/shared/dist
 COPY --from=installer --chown=nodejs:nodejs /app/packages/shared/package.json ./packages/shared/package.json
+COPY --from=installer --chown=nodejs:nodejs /app/packages/shared/node_modules ./packages/shared/node_modules
 
 # Copy API build output
 COPY --from=installer --chown=nodejs:nodejs /app/apps/api/dist ./apps/api/dist

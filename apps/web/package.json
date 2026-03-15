@@ -1,5 +1,5 @@
 {
-  "name": "@my-project/web",
+  "name": "@repo/web",
   "version": "0.0.0",
   "private": true,
   "scripts": {

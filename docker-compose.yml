@@ -10,7 +10,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U devuser']
+      test: ['CMD-SHELL', 'pg_isready -U admin']
       interval: 5s
       timeout: 3s
       retries: 5
@@ -32,15 +32,10 @@ services:
     ports:
       - '3001:3001'
     environment:
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      DATABASE_NAME: hardened_monorepo
-      DATABASE_USER: devuser
-      DATABASE_PASSWORD: devpass
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      JWT_SECRET: local-dev-secret-must-be-at-least-32-characters-long
-      NODE_ENV: production
+      DATABASE_URL: postgres://admin:password123@postgres:5432/hardened_monorepo
+      JWT_ACCESS_SECRET: local-dev-access-secret-must-be-at-least-32-chars!!
+      JWT_REFRESH_SECRET: local-dev-refresh-secret-must-be-at-least-32-chars!
+      NODE_ENV: development
       PORT: 3001
     depends_on:
       postgres:
@@ -52,6 +47,8 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        BACKEND_API_URL: http://api:3001
     ports:
       - '3000:3000'
     environment:
